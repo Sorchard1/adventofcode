@@ -56,7 +56,31 @@ int main() {
 
     // Find the maximum calories.
     double max_calories = *max_element(elf_total_calories.begin(), elf_total_calories.end());
+
+    // Part 1 answer
     std::cout << max_calories << "\n";
+
+    // Make a vector for the top 3 total calories carried by each elf.
+    std::vector<int> top_3_totals = {0, 0, 0};
+
+    for (int elf_total_calorie : elf_total_calories) {
+        // Replace values that are lower and step them down the vector (0 is maximum).
+        if (elf_total_calorie > top_3_totals[0]){
+            top_3_totals[2] = top_3_totals[1];
+            top_3_totals[1] = top_3_totals[0];
+            top_3_totals[0] = elf_total_calorie;
+        }
+        else if (top_3_totals[0] >= elf_total_calorie & elf_total_calorie > top_3_totals[1]) {
+            top_3_totals[2] = top_3_totals[1];
+            top_3_totals[1] = elf_total_calorie;
+        }
+        else if (top_3_totals[1] >= elf_total_calorie & elf_total_calorie > top_3_totals[2]) {
+            top_3_totals[2] = elf_total_calorie;
+        }
+    }
+
+    // Part 2 answer
+    std::cout << top_3_totals[0] + top_3_totals[1] + top_3_totals[2] << "\n";
 
     return 0;
 }
