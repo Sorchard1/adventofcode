@@ -1,0 +1,62 @@
+//
+// Created by simon on 23/02/23.
+//
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <filesystem>
+#include <vector>
+
+
+int main() {
+    std::string mystring;
+
+    // Get the data path.
+    std::filesystem::path cwd = std::filesystem::current_path();
+    std::ifstream datafile;
+    datafile.open(cwd  / "data.txt");
+    std::string myline;
+
+    // Make space for data.
+    std::vector<std::vector<int>> elf_calories;
+    std::vector<int> calories;
+
+    // Read the data file.
+    if ( datafile.is_open() ) {
+        while ( datafile ) {
+            std::getline (datafile, myline);
+            if (myline.length() == 0){
+                // reset the buffer for a new elf.
+                elf_calories.push_back(calories);
+                calories = {};
+            }
+            else{
+                // Add a new calories entry for the current elf.
+                calories.push_back(std::stoi(myline));
+            }
+        }
+    }
+    else {
+        std::cout << "\n File not open!";
+    }
+
+    // Find the calories each elf has.
+    std::vector<int> elf_total_calories;
+    int total_calories;
+    for (auto & elf_calorie : elf_calories) {
+        total_calories = 0;
+        for (auto & calorie : elf_calorie) {
+            // Add calories for the current elf.
+            total_calories += calorie;
+
+        }
+        // Store the total calories for the current elf in a new vector.
+        elf_total_calories.push_back(total_calories);
+    }
+
+    // Find the maximum calories.
+    double max_calories = *max_element(elf_total_calories.begin(), elf_total_calories.end());
+    std::cout << max_calories << "\n";
+
+    return 0;
+}
