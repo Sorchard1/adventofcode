@@ -8,13 +8,11 @@
 #include <vector>
 
 namespace day202201 {
-    int run() {
-        std::string mystring;
+    int run(std::filesystem::path data_path) {
 
-        // Get the data path.
-        std::filesystem::path cwd = std::filesystem::current_path();
+        std::string mystring;
         std::ifstream datafile;
-        datafile.open(cwd / "data.txt");
+        datafile.open(data_path);
         std::string myline;
 
         // Make space for data.

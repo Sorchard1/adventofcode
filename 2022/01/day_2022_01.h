@@ -7,7 +7,7 @@
 
 
 namespace day202201{
-    int run();
+    int run(std::filesystem::path data_path);
 }
 
 #endif //ADVENTOFCODE_DAY_2022_01_H
