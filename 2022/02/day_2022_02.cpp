@@ -81,17 +81,21 @@ namespace day202202 {
         else {
             std::cout << "\n File not open!";
         }
+
         int difference;
         int score = 0;
         for (int i = 0; i < strategy_guide_theirs.size(); i++) {
             difference = strategy_guide_theirs[i] - strategy_guide_mine[i];
+
             if (difference == -1 or difference == 2){
                 // Win adds 6, (+1 rock, +2 paper, +3 scissors).
-                score += 6 + mine + 1;
+                score += 6 + strategy_guide_mine[i] + 1;
+                std::cout << "win " << 6 + strategy_guide_mine[i] + 1 << "\n";
             }
             else if (difference == 1 or difference == -2){
                 // Loss adds 0, (+1 rock, +2 paper, +3 scissors).
-                score += mine + 1;
+                score += strategy_guide_mine[i] + 1;
+                std::cout << "loss " << strategy_guide_mine[i] + 1 << "\n";
 
             }
             else {
@@ -99,8 +103,8 @@ namespace day202202 {
                 assert (difference == 0);
 
                 // Draw adds 3, (+1 rock, +2 paper, +3 scissors).
-                score += 3 + mine + 1;
-
+                score += 3 + strategy_guide_mine[i] + 1;
+                std::cout << "draw " << 3 + strategy_guide_mine[i] + 1 << "\n";
             }
         }
 
