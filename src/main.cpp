@@ -4,6 +4,7 @@
 #include <iostream>
 #include <filesystem>
 #include "day_2022_01.h"
+#include "day_2022_02.h"
 
 
 int main() {
@@ -41,6 +42,9 @@ int main() {
         }
         case 202202:
         {
+            day_dir = "02";
+            day202202::run(cwd / year_dir / day_dir / data_name);
+
             break;
         }
 

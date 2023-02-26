@@ -8,7 +8,8 @@
 #include <vector>
 
 namespace day202201 {
-    int run(std::filesystem::path data_path) {
+    int run(std::filesystem::path data_path)
+    {
 
         std::string mystring;
         std::ifstream datafile;
@@ -23,25 +24,27 @@ namespace day202201 {
         if (datafile.is_open()) {
             while (datafile) {
                 std::getline(datafile, myline);
-                if (myline.length() == 0) {
+                if (myline.length()==0) {
                     // reset the buffer for a new elf.
                     elf_calories.push_back(calories);
                     calories = {};
-                } else {
+                }
+                else {
                     // Add a new calories entry for the current elf.
                     calories.push_back(std::stoi(myline));
                 }
             }
-        } else {
+        }
+        else {
             std::cout << "\n File not open!";
         }
 
         // Find the calories each elf has.
         std::vector<int> elf_total_calories;
         int total_calories;
-        for (auto &elf_calorie: elf_calories) {
+        for (auto& elf_calorie: elf_calories) {
             total_calories = 0;
-            for (auto &calorie: elf_calorie) {
+            for (auto& calorie: elf_calorie) {
                 // Add calories for the current elf.
                 total_calories += calorie;
 
@@ -61,20 +64,22 @@ namespace day202201 {
 
         for (int elf_total_calorie: elf_total_calories) {
             // Replace values that are lower and step them down the vector (0 is maximum).
-            if (elf_total_calorie > top_3_totals[0]) {
+            if (elf_total_calorie>top_3_totals[0]) {
                 top_3_totals[2] = top_3_totals[1];
                 top_3_totals[1] = top_3_totals[0];
                 top_3_totals[0] = elf_total_calorie;
-            } else if (top_3_totals[0] >= elf_total_calorie & elf_total_calorie > top_3_totals[1]) {
+            }
+            else if (top_3_totals[0]>=elf_total_calorie & elf_total_calorie>top_3_totals[1]) {
                 top_3_totals[2] = top_3_totals[1];
                 top_3_totals[1] = elf_total_calorie;
-            } else if (top_3_totals[1] >= elf_total_calorie & elf_total_calorie > top_3_totals[2]) {
+            }
+            else if (top_3_totals[1]>=elf_total_calorie & elf_total_calorie>top_3_totals[2]) {
                 top_3_totals[2] = elf_total_calorie;
             }
         }
 
         // Part 2 answer
-        std::cout << top_3_totals[0] + top_3_totals[1] + top_3_totals[2] << "\n";
+        std::cout << top_3_totals[0]+top_3_totals[1]+top_3_totals[2] << "\n";
 
         return 0;
     }
