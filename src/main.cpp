@@ -5,6 +5,7 @@
 #include <filesystem>
 #include "day_2022_01.h"
 #include "day_2022_02.h"
+#include "day_2022_03.h"
 
 
 int main() {
@@ -44,6 +45,13 @@ int main() {
         {
             day_dir = "02";
             day202202::run(cwd / year_dir / day_dir / data_name);
+
+            break;
+        }
+        case 202203:
+        {
+            day_dir = "03";
+            day202203::run(cwd / year_dir / day_dir / data_name);
 
             break;
         }
