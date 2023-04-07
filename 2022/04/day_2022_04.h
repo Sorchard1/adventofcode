@@ -8,7 +8,7 @@
 #include <vector>
 
 namespace day202204 {
-
+    std::vector<std::string> split_string(std::string input_string, std::string delimiter);
     int run(std::filesystem::path data_path);
 }
 
