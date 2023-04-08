@@ -26,6 +26,7 @@ namespace day202205 {
         std::vector<int> move_from;
         std::vector<int> move_to;
         std::string new_string;
+        bool part_1 = false;
         unsigned int split_index;
 
         // Read the data file.
@@ -94,33 +95,46 @@ namespace day202205 {
             std::cout << "\n File not open!";
         }
 
-        for (int j = 0; j < crate_stacks[0].size(); j++) {
-            std::cout << 0 + 1 << " " << crate_stacks[0][j] << "\n";
-        }
-        for (int j = 0; j < crate_stacks[1].size(); j++) {
-            std::cout << 1 + 1 << " " << crate_stacks[1][j] << "\n";
-        }
-        for (int j = 0; j < crate_stacks[2].size(); j++) {
-            std::cout << 2 + 1 << " " << crate_stacks[2][j] << "\n";
-        }
+        if (part_1){
+            // Perform the moving
+            for (int i = 0; i < n_moving.size(); i++) {
+                for (int j = 0; j < n_moving[i]; j++){
+                    crate_stacks[move_to[i]].push_front(crate_stacks[move_from[i]][0]);
+                    crate_stacks[move_from[i]].pop_front();
 
-        // Perform the moving
-        for (int i = 0; i < n_moving.size(); i++) {
-//            std::cout << n_moving[i] << " " << move_from[i] + 1 << " " << move_to[i] + 1 << "\n";
-            for (int j = 0; j < n_moving[i]; j++){
-                std::cout << crate_stacks[move_to[i]][0] << "\n";
-                std::cout << crate_stacks[move_from[i]][0] << "\n";
-                crate_stacks[move_to[i]].push_front(crate_stacks[move_from[i]][0]);
-                crate_stacks[move_from[i]].pop_front();
-
+                }
             }
-        }
 
-        std::cout << "Part 1 ";
-        for (int i = 0; i < crate_stacks.size(); i++) {
-            std::cout << crate_stacks[i][0];
+            std::cout << "Part 1 ";
+            for (int i = 0; i < crate_stacks.size(); i++) {
+                std::cout << crate_stacks[i][0];
+            }
+            std::cout << "\n";
+
+        } else {
+
+            // Perform the moving
+            for (int i = 0; i < n_moving.size(); i++) {
+
+                // Add the new elements
+                for (int j = 0; j < n_moving[i]; j++) {
+                    crate_stacks[move_to[i]].push_front(crate_stacks[move_from[i]][n_moving[i] - j - 1]);
+
+                }
+                // Remove the old elements
+                for (int j = 0; j < n_moving[i]; j++) {
+                    crate_stacks[move_from[i]].pop_front();
+
+                }
+            }
+
+            std::cout << "Part 2 ";
+            for (int i = 0; i < crate_stacks.size(); i++) {
+                std::cout << crate_stacks[i][0];
+            }
+            std::cout << "\n";
+
         }
-        std::cout << "\n";
 
         return 0;
     }
