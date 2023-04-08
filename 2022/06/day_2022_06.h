@@ -8,7 +8,7 @@
 #include <vector>
 
 namespace day202206 {
-
+    int get_first_unique_end_index(std::string& input_string, int unique_length, unsigned int line_length);
     int run(std::filesystem::path data_path);
 }
 
