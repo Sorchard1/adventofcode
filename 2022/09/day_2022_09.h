@@ -8,7 +8,7 @@
 #include <vector>
 
 namespace day202209 {
-
+    int sign(int input);
     int run(std::filesystem::path data_path);
 }
 
