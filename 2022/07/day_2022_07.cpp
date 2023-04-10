@@ -18,6 +18,7 @@ namespace day202207 {
         parent = NULL;
         calculated_size = false;
         directory_size = 0;
+        directory_local_size = 0;
     };
 
     void Node::add_node(std::string new_name){
@@ -118,6 +119,8 @@ namespace day202207 {
         Node* node_ptr = &root_node;
         int sum_small_directories = 0;
         const int directory_max_sum = 100000;
+        std::vector<int> directory_sizes;
+        std::vector<int> directory_full_sizes;
         int subdir_index;
         bool calculated_subdirs;
 
@@ -138,12 +141,16 @@ namespace day202207 {
                 // If at a leaf, calculate the size.
                 for (int i = 0; i < node_ptr->file_sizes.size(); i++) {
                     node_ptr->directory_size += node_ptr->file_sizes[i];
+                    node_ptr->directory_local_size += node_ptr->file_sizes[i];
 
                 }
                 node_ptr->calculated_size = true;
                 if (node_ptr->directory_size <= directory_max_sum) {
                     sum_small_directories += node_ptr->directory_size;
                 }
+                directory_sizes.push_back(node_ptr->directory_local_size);
+                directory_full_sizes.push_back(node_ptr->directory_size);
+                std::cout << "Dir size " << node_ptr->directory_local_size << "\n";
                 std::cout << "leaf calculated in " << node_ptr->name << "\n";
 
             }
@@ -160,6 +167,7 @@ namespace day202207 {
                     // There are no directories that haven't been calculated, so calculate the total size
                     for (int i = 0; i < node_ptr->file_sizes.size(); i++) {
                         node_ptr->directory_size += node_ptr->file_sizes[i];
+                        node_ptr->directory_local_size += node_ptr->file_sizes[i];
 
                     }
                     for (int i = 0; i < node_ptr->subdirectories.size(); i++) {
@@ -171,6 +179,9 @@ namespace day202207 {
                     if (node_ptr->directory_size <= directory_max_sum) {
                         sum_small_directories += node_ptr->directory_size;
                     }
+                    directory_sizes.push_back(node_ptr->directory_local_size);
+                    directory_full_sizes.push_back(node_ptr->directory_size);
+                    std::cout << "Dir size " << node_ptr->directory_local_size << "\n";
                     std::cout << "calculated in directory " << node_ptr->name << "\n";
                 }
                 else {
@@ -183,6 +194,28 @@ namespace day202207 {
 
         }
         std::cout << "Part 1 " << sum_small_directories << "\n";
+
+        const int filesystem_max = 70000000;
+        const int space_needed = 30000000;
+        int space_to_free;
+        int space_used = 0;
+        for (int directory_size : directory_sizes){
+            space_used += directory_size;
+        }
+        space_to_free = space_used - (filesystem_max - space_needed);
+        std::cout << space_used << "\n";
+        std::cout << space_to_free << "\n";
+
+        int best_to_delete = filesystem_max;
+        for (int directory_full_size : directory_full_sizes){
+            if (directory_full_size >= space_to_free){
+                if (directory_full_size < best_to_delete) {
+                    best_to_delete = directory_full_size;
+                }
+            }
+        }
+        std::cout << "Part 2 " << best_to_delete << "\n";
+
         return 0;
     }
 }

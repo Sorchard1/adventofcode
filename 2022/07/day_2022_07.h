@@ -29,6 +29,7 @@ namespace day202207 {
                 std::string name;
                 bool calculated_size;
                 int directory_size;
+                int directory_local_size;
                 std::vector<int> file_sizes;
 
     };
