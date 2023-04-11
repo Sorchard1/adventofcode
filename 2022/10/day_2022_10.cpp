@@ -61,6 +61,50 @@ namespace day202210 {
         }
 
         std::cout << "Part 1 " << strength << "\n";
+
+        const int screen_x = 40;
+        const int screen_y = 6;
+        std::vector<bool> line_lit;
+        std::vector<std::vector<bool>> screen_lit;
+        for (int i = 0; i < screen_x; i++) {
+            line_lit.push_back(false);
+        }
+        for (int j = 0; j < screen_y; j++) {
+            screen_lit.push_back(line_lit);
+        }
+
+        int index = 0;
+        int reg_index;
+
+        for (int j = 0; j < screen_y; j++) {
+            for (int i = 0; i < screen_x; i++) {
+                if (index == 0) {
+                    reg_index = 0;
+                }
+                else {
+                    reg_index = index - 1;
+                }
+                if (std::abs(registers[reg_index] - i) <= 1) {
+
+                    screen_lit[j][i] = true;
+                }
+                index += 1;
+            }
+        }
+
+        for (int j = 0; j < screen_y; j++) {
+            for (int i = 0; i < screen_x; i++) {
+                if (screen_lit[j][i]) {
+                    std::cout << "#";
+                } else {
+                    std::cout << ".";
+                }
+            }
+            std::cout << "\n";
+
+        }
+
+        std::cout << "Part 2 manually read off as: RZEKEFHA\n";
         return 0;
     }
 }
