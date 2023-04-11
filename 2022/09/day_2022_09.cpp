@@ -130,10 +130,8 @@ namespace day202209 {
             std::cout << "\n File not open!";
         }
 
-        position = {0, 0};
-
         std::vector<std::vector<std::vector<int>>> knot_positions;
-        int n_knots = 1;
+        int n_knots = 9;
         // Init all knots
         for (int i = 0; i < n_knots + 1; i++) {
             knot_positions.push_back({{0, 0}});
@@ -153,10 +151,13 @@ namespace day202209 {
             }
         }
 
-        unsigned int last_knot_index = knot_positions.size() - 1;
-        int n_sets = unique_visits(knot_positions[last_knot_index]);
+        unsigned int knot_evaluate = 1;
+        int n_sets = unique_visits(knot_positions[knot_evaluate]);
 
         std::cout << "Part 1 " << n_sets << " " << "\n";
+        unsigned int knot_evaluate_2 = 9;
+        int n_sets_2 = unique_visits(knot_positions[knot_evaluate_2]);
+        std::cout << "Part 2 " << n_sets_2 << " " << "\n";
 
         return 0;
     }
