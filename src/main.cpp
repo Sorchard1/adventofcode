@@ -48,7 +48,7 @@ int main() {
     cwd = cwd.parent_path();
 
     // Get the path to the data file.
-    std::filesystem::path data_name = "data.txt";
+    std::filesystem::path data_name = "example.txt";
     std::filesystem::path year_dir = std::to_string(year);
     std::filesystem::path day_dir;
 
