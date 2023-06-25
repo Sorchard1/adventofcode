@@ -55,15 +55,15 @@ namespace day202211 {
         int index_true;
         int index_false;
         int value_;
-        Expression* expression_;
 
     public:
         int index;
+        Expression* expression_;
 
         Monkey(int monkey_index, std::vector<int> monkey_items, int monkey_test_divisor, int monkey_index_true,
                int monkey_index_false);
         void inspect_items();
-        void set_expression(Expression *expression);
+        void set_expression(Expression* expression);
     };
     int run(std::filesystem::path data_path);
 }

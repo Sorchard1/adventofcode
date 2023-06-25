@@ -70,6 +70,9 @@ namespace day202211 {
 
     void Monkey::inspect_items() {
         int check = 1;
+        std::cout << "start " << check << "\n";
+        std::cout << expression_->evaluate(10) << "\n" ;
+
         check = expression_->evaluate(check);
         std::cout << "check " << check << "\n";
         std::cout << "f("<<expression_<<"):" << typeid(*expression_).name() << "\n";
@@ -80,8 +83,12 @@ namespace day202211 {
 //            std::cout << "after " << items[i] << "\n";
 //        }
     }
-    void Monkey::set_expression(Expression *expression) {
+    void Monkey::set_expression(Expression* expression) {
         expression_ = expression;
+        std::cout << expression_->evaluate(10) << "\n" ;
+        std::cout << "Expression pntr " << expression_ << "\n" ;
+        std::cout << "f("<<expression_<<"):" << typeid(*expression_).name() << "\n";
+
     };
 
 
@@ -113,10 +120,10 @@ namespace day202211 {
         std::vector<Expression*> expression_left_list;
         std::vector<Expression*> expression_right_list;
         std::vector<Expression*> expression_total_list;
-
-        Expression* expression;
-        Expression* left_ptr;
-        Expression* right_ptr;
+        std::vector<OldExpression> old_expression_list;
+        std::vector<NumericalExpression> numerical_expression_list;
+        std::vector<MultiplyExpression> multiply_expression_list;
+        std::vector<AdditionExpression> add_expression_list;
 
         // Read the data file.
         if (datafile.is_open()) {
@@ -171,40 +178,32 @@ namespace day202211 {
                             std::cout <<"operand_2 " << operand_2 << "\n";
 
                             if (operand_1 == "old") {
-
-                                day202211::OldExpression left = OldExpression(0, nullptr, nullptr);
-                                left_ptr = &left;
-//                                expression_left_list.push_back(left_ptr);
+                                old_expression_list.push_back(OldExpression(0, nullptr, nullptr));
+                                expression_left_list.push_back(&old_expression_list[old_expression_list.size()-1]);
                             }
                             else {
-                                day202211::NumericalExpression left = NumericalExpression(std::stoi(operand_1), nullptr, nullptr);
-                                left_ptr = &left;
-//                                expression_left_list.push_back(left_ptr);
+                                numerical_expression_list.push_back(NumericalExpression(std::stoi(operand_1), nullptr, nullptr));
+                                expression_left_list.push_back(&numerical_expression_list[numerical_expression_list.size()-1]);
+
                             }
                             if (operand_2 == "old") {
-                                day202211::OldExpression right = OldExpression(0, nullptr, nullptr);
-                                right_ptr = &right;
-//                                expression_right_list.push_back(right_ptr);
+                                old_expression_list.push_back(OldExpression(0, nullptr, nullptr));
+                                expression_right_list.push_back(&old_expression_list[old_expression_list.size()-1]);
 
                             }
                             else {
                                 std::cout <<"made operand 2 " << operand_2 << "\n";
-                                day202211::NumericalExpression right = NumericalExpression(std::stoi(operand_2), nullptr, nullptr);
-                                right_ptr = &right;
-//                                expression_right_list.push_back(right_ptr);
-
+                                numerical_expression_list.push_back(NumericalExpression(std::stoi(operand_2), nullptr, nullptr));
+                                expression_right_list.push_back(&numerical_expression_list[numerical_expression_list.size()-1]);
                             }
                             if (operator_ == "+") {
-                                day202211::AdditionExpression addition = AdditionExpression(0, left_ptr, right_ptr);
-                                expression = &addition;
-//                                expression_total_list.push_back(expression);
+                                add_expression_list.push_back(AdditionExpression(0, expression_left_list[expression_left_list.size()-1], expression_right_list[expression_right_list.size()-1]));
+                                expression_total_list.push_back(&add_expression_list[add_expression_list.size()-1]);
 
                             }
                             else if (operator_ == "*") {
-                                day202211::MultiplyExpression multiplication = MultiplyExpression(0, left_ptr, right_ptr);
-                                expression = &multiplication;
-//                                expression_total_list.push_back(expression);
-
+                                multiply_expression_list.push_back(MultiplyExpression(0, expression_left_list[expression_left_list.size()-1], expression_right_list[expression_right_list.size()-1]));
+                                expression_total_list.push_back(&multiply_expression_list[multiply_expression_list.size()-1]);
                             }
 
                             break;
@@ -214,7 +213,10 @@ namespace day202211 {
                 if (lines_left == 0) {
                     lines_left = line_per_data;
                     monkeys.emplace_back(monkey_index, monkey_items, monkey_test_divisor, monkey_index_true, monkey_index_false);
-                    monkeys[monkeys.size()-1].set_expression(expression);
+                    std::cout << "sizes " << monkeys.size()-1 <<", " << monkeys.size()-1 << expression_total_list[monkeys.size()-1]<< "\n";
+                    monkeys[monkeys.size()-1].set_expression(expression_total_list[monkeys.size()-1]);
+                    std::cout << "still there? " << "f("<<monkeys[monkeys.size()-1].expression_<<"):" << typeid(*monkeys[monkeys.size()-1].expression_).name() << "\n";
+
                 }
                 else {
                     lines_left -= 1;
