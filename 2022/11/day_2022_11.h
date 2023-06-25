@@ -10,40 +10,51 @@
 namespace day202211 {
     // Interpreter pattern.
     class Expression {
-    protected:
-        Expression* left_;
-        Expression* right_;
-        int value_;
     public:
         // Destructor guaranteed to be called when out of scope
-        Expression(int value, Expression *left, Expression *right) {};
+        Expression() {};
         virtual int evaluate(int old) = 0;
+    };
+    class CombinedExpression : public Expression {
+    public:
+        // Destructor guaranteed to be called when out of scope
+        CombinedExpression(Expression *left, Expression *right);
+        virtual int evaluate(int old) = 0;
+        Expression* left_;
+        Expression* right_;
     };
 
     class NumericalExpression : public Expression {
         public:
-            NumericalExpression(int value, Expression *left, Expression *right);
+            NumericalExpression(int value);
             int evaluate(int old) override;
-            void set_value(int value);
-    };
-
-    class OldExpression : public NumericalExpression {
-        public:
-            OldExpression(int value, Expression *left, Expression *right);
-            int evaluate(int old) override;
+            int value_;
 
     };
 
-    class AdditionExpression : public NumericalExpression {
+    class NullExpression : public Expression {
         public:
-            AdditionExpression(int value, Expression *left, Expression *right);
+            NullExpression();
             int evaluate(int old) override;
     };
 
-    class MultiplyExpression : public NumericalExpression {
+    class OldExpression : public Expression {
+        public:
+            OldExpression();
+            int evaluate(int old) override;
+
+    };
+
+    class AdditionExpression : public CombinedExpression {
+        public:
+            AdditionExpression(Expression *left, Expression *right);
+            int evaluate(int old) override;
+    };
+
+    class MultiplyExpression : public CombinedExpression {
 
         public:
-            MultiplyExpression(int value, Expression *left, Expression *right);
+            MultiplyExpression(Expression *left, Expression *right);
             int evaluate(int old) override;
     };
 
@@ -61,7 +72,7 @@ namespace day202211 {
         Expression* expression_;
 
         Monkey(int monkey_index, std::vector<int> monkey_items, int monkey_test_divisor, int monkey_index_true,
-               int monkey_index_false);
+               int monkey_index_false, Expression* expression);
         void inspect_items();
         void set_expression(Expression* expression);
     };

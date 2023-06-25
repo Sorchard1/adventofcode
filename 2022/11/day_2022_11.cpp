@@ -11,10 +11,11 @@
 #include <day_2022_11.h>
 
 namespace day202211 {
-    NumericalExpression::NumericalExpression(int value, Expression *left, Expression *right) : Expression(value, left, right) {
-        value_ = value;
+    CombinedExpression::CombinedExpression(Expression *left, Expression *right) : Expression() {
+        left_ = left;
+        right_ = right;
     }
-    void NumericalExpression::set_value(int value) {
+    NumericalExpression::NumericalExpression(int value) : Expression() {
         value_ = value;
     }
 
@@ -23,8 +24,14 @@ namespace day202211 {
 
         return value_;
     }
+    NullExpression::NullExpression() : Expression() {
+    }
 
-    OldExpression::OldExpression(int value, Expression *left, Expression *right) : NumericalExpression(value, left, right) {
+    int NullExpression::evaluate(int old) {
+        return 0;
+    }
+
+    OldExpression::OldExpression() : Expression() {
     }
 
     int OldExpression::evaluate(int old) {
@@ -33,9 +40,7 @@ namespace day202211 {
         return old;
     }
 
-    AdditionExpression::AdditionExpression(int value, Expression *left, Expression *right) : NumericalExpression(value, left, right) {
-        left_ = left;
-        right_ = right;
+    AdditionExpression::AdditionExpression(Expression *left, Expression *right) : CombinedExpression(left, right) {
     }
 
     int AdditionExpression::evaluate(int old) {
@@ -44,9 +49,7 @@ namespace day202211 {
         return left_->evaluate(old) + right_->evaluate(old);
     }
 
-    MultiplyExpression::MultiplyExpression(int value, Expression *left, Expression *right) : NumericalExpression(value, left, right) {
-        left_ = left;
-        right_ = right;
+    MultiplyExpression::MultiplyExpression(Expression *left, Expression *right) : CombinedExpression(left, right) {
     }
 
     int MultiplyExpression::evaluate(int old) {
@@ -58,13 +61,13 @@ namespace day202211 {
     }
 
     Monkey::Monkey(int monkey_index, std::vector<int> monkey_items, int monkey_test_divisor, int monkey_index_true,
-                   int monkey_index_false) {
+                   int monkey_index_false, Expression* expression) {
         index = monkey_index;
         items = monkey_items;
         test_divisor = monkey_test_divisor;
         index_true = monkey_index_true;
         index_false = monkey_index_false;
-        expression_ = nullptr;
+        expression_ = expression;
         value_ = 0;
     }
 
@@ -114,7 +117,6 @@ namespace day202211 {
         std::string operator_;
         std::string operand_2;
         std::vector<day202211::Monkey> monkeys;
-        std::vector<day202211::Expression> monkey_expressions;
 
         // TODO make a list of each expression that would be stored as a ptr
         std::vector<Expression*> expression_left_list;
@@ -178,44 +180,49 @@ namespace day202211 {
                             std::cout <<"operand_2 " << operand_2 << "\n";
 
                             if (operand_1 == "old") {
-                                old_expression_list.push_back(OldExpression(0, nullptr, nullptr));
+                                old_expression_list.push_back(OldExpression());
                                 expression_left_list.push_back(&old_expression_list[old_expression_list.size()-1]);
                             }
                             else {
-                                numerical_expression_list.push_back(NumericalExpression(std::stoi(operand_1), nullptr, nullptr));
+                                numerical_expression_list.push_back(NumericalExpression(std::stoi(operand_1)));
                                 expression_left_list.push_back(&numerical_expression_list[numerical_expression_list.size()-1]);
 
                             }
                             if (operand_2 == "old") {
-                                old_expression_list.push_back(OldExpression(0, nullptr, nullptr));
+                                old_expression_list.push_back(OldExpression());
                                 expression_right_list.push_back(&old_expression_list[old_expression_list.size()-1]);
 
                             }
                             else {
                                 std::cout <<"made operand 2 " << operand_2 << "\n";
-                                numerical_expression_list.push_back(NumericalExpression(std::stoi(operand_2), nullptr, nullptr));
+                                numerical_expression_list.push_back(NumericalExpression(std::stoi(operand_2)));
                                 expression_right_list.push_back(&numerical_expression_list[numerical_expression_list.size()-1]);
                             }
                             if (operator_ == "+") {
-                                add_expression_list.push_back(AdditionExpression(0, expression_left_list[expression_left_list.size()-1], expression_right_list[expression_right_list.size()-1]));
+                                add_expression_list.push_back(AdditionExpression(expression_left_list[expression_left_list.size()-1], expression_right_list[expression_right_list.size()-1]));
                                 expression_total_list.push_back(&add_expression_list[add_expression_list.size()-1]);
+                                std::cout << "add eval" << add_expression_list[0].evaluate(10) <<"\n";
 
                             }
                             else if (operator_ == "*") {
-                                multiply_expression_list.push_back(MultiplyExpression(0, expression_left_list[expression_left_list.size()-1], expression_right_list[expression_right_list.size()-1]));
+                                multiply_expression_list.push_back(MultiplyExpression(expression_left_list[expression_left_list.size()-1], expression_right_list[expression_right_list.size()-1]));
                                 expression_total_list.push_back(&multiply_expression_list[multiply_expression_list.size()-1]);
+                                std::cout << "mult eval" << multiply_expression_list[0].evaluate(10) <<"\n";
                             }
-
+                            std::cout << "pnt eval " << expression_total_list[0]->evaluate(10) <<"\n";
                             break;
                         }
                     }
                 }
                 if (lines_left == 0) {
                     lines_left = line_per_data;
-                    monkeys.emplace_back(monkey_index, monkey_items, monkey_test_divisor, monkey_index_true, monkey_index_false);
+                    monkeys.emplace_back(monkey_index, monkey_items, monkey_test_divisor, monkey_index_true, monkey_index_false, expression_total_list[monkeys.size()]);
                     std::cout << "sizes " << monkeys.size()-1 <<", " << monkeys.size()-1 << expression_total_list[monkeys.size()-1]<< "\n";
-                    monkeys[monkeys.size()-1].set_expression(expression_total_list[monkeys.size()-1]);
-                    std::cout << "still there? " << "f("<<monkeys[monkeys.size()-1].expression_<<"):" << typeid(*monkeys[monkeys.size()-1].expression_).name() << "\n";
+//                    monkeys[monkeys.size()-1].set_expression(expression_total_list[monkeys.size()-1]);
+                    std::cout << "still there? 0 " << monkeys[0].expression_ << "or " << expression_total_list[0] << "\n";
+                    std::cout << "still there? 1 " << monkeys[1].expression_ << "or " << expression_total_list[1] << "\n";
+                    std::cout << "still there? 2 " << monkeys[2].expression_ << "or " << expression_total_list[2] << "\n";
+                    std::cout << "still there? 3 " << monkeys[3].expression_ << "or " << expression_total_list[3] << "\n";
 
                 }
                 else {
@@ -225,6 +232,9 @@ namespace day202211 {
         }
         else {
             std::cout << "\n File not open!";
+        }
+        for (int i = 0; i < add_expression_list.size(); i++) {
+            std::cout << "test " << i << " " << add_expression_list[i].evaluate(10)<< "\n";
         }
         std::cout << "Inspect 0" << "\n" ;
         monkeys[0].inspect_items();
