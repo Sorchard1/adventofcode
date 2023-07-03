@@ -11,6 +11,30 @@
 #include <day_2022_11.h>
 
 namespace day202211 {
+    Monkey::~Monkey() {
+        std::cout << "delete monkey \n";
+    };
+    CombinedExpression::~CombinedExpression() {
+        std::cout << "delete combined expression input \n";
+        delete left_;
+        delete right_;
+        std::cout << "delete combined expression \n";
+    };
+    NumericalExpression::~NumericalExpression() {
+        std::cout << "delete numerical expression \n";
+    };
+    NullExpression::~NullExpression() {
+        std::cout << "delete null expression \n";
+    };
+    OldExpression::~OldExpression() {
+        std::cout << "delete old expression \n";
+    };
+    MultiplyExpression::~MultiplyExpression() {
+        std::cout << "delete multiply expression \n";
+    };
+    AdditionExpression::~AdditionExpression() {
+        std::cout << "delete addition expression \n";
+    };
     CombinedExpression::CombinedExpression(Expression *left, Expression *right) : Expression() {
         left_ = left;
         right_ = right;
@@ -18,6 +42,10 @@ namespace day202211 {
     NumericalExpression::NumericalExpression(int value) : Expression() {
         value_ = value;
     }
+//    NumericalExpression::NumericalExpression(const NumericalExpression &t) {
+//        std::cout << "copy numerical exp \n";
+//        value_ = t.value_;
+//    };
 
     int NumericalExpression::evaluate(int old) {
         std::cout <<"get value " << value_ << "\n";
@@ -41,7 +69,14 @@ namespace day202211 {
     }
 
     AdditionExpression::AdditionExpression(Expression *left, Expression *right) : CombinedExpression(left, right) {
+        // TODO want to call these in subclass
+//        left_ = left;
+//        right_ = right;
     }
+//    CombinedExpression::CombinedExpression(const CombinedExpression &t){
+//        left_=t.left_;
+//        right_=t.right_;
+//    }
 
     int AdditionExpression::evaluate(int old) {
         std::cout <<"adding "<<old<<"\n";
@@ -50,6 +85,11 @@ namespace day202211 {
     }
 
     MultiplyExpression::MultiplyExpression(Expression *left, Expression *right) : CombinedExpression(left, right) {
+        // TODO want to call these in subclass
+//        left_ = left;
+//        right_ = right;
+//        std::cout << "Multiply left" << left_->evaluate(10) << "\n";
+//        std::cout << "Multiply right" << right->evaluate(10) << "\n";
     }
 
     int MultiplyExpression::evaluate(int old) {
@@ -68,6 +108,10 @@ namespace day202211 {
         index_true = monkey_index_true;
         index_false = monkey_index_false;
         expression_ = expression;
+        std::cout << "check exp " << "\n" ;
+
+        std::cout << expression_->evaluate(10) << " checked" << "\n" ;
+
         value_ = 0;
     }
 
@@ -126,7 +170,9 @@ namespace day202211 {
         std::vector<NumericalExpression> numerical_expression_list;
         std::vector<MultiplyExpression> multiply_expression_list;
         std::vector<AdditionExpression> add_expression_list;
-
+        std::vector<std::unique_ptr<Expression>> expression_left_ptr;
+        std::vector<std::unique_ptr<Expression>> expression_right_ptr;
+        std::vector<std::unique_ptr<Expression>> expression_total_ptr;
         // Read the data file.
         if (datafile.is_open()) {
             while (datafile) {
@@ -180,36 +226,40 @@ namespace day202211 {
                             std::cout <<"operand_2 " << operand_2 << "\n";
 
                             if (operand_1 == "old") {
-                                old_expression_list.push_back(OldExpression());
+                                std::cout << "MAKE EXPRESSION \n";
+                                old_expression_list.emplace_back();
+                                std::cout << "MADE EXPRESSION \n";
                                 expression_left_list.push_back(&old_expression_list[old_expression_list.size()-1]);
+                                std::cout << "STORED PTR EXPRESSION \n";
+
                             }
                             else {
-                                numerical_expression_list.push_back(NumericalExpression(std::stoi(operand_1)));
+                                numerical_expression_list.emplace_back(std::stoi(operand_1));
                                 expression_left_list.push_back(&numerical_expression_list[numerical_expression_list.size()-1]);
 
                             }
                             if (operand_2 == "old") {
-                                old_expression_list.push_back(OldExpression());
+                                old_expression_list.emplace_back();
                                 expression_right_list.push_back(&old_expression_list[old_expression_list.size()-1]);
 
                             }
                             else {
                                 std::cout <<"made operand 2 " << operand_2 << "\n";
-                                numerical_expression_list.push_back(NumericalExpression(std::stoi(operand_2)));
+                                numerical_expression_list.emplace_back(std::stoi(operand_2));
                                 expression_right_list.push_back(&numerical_expression_list[numerical_expression_list.size()-1]);
                             }
                             if (operator_ == "+") {
-                                add_expression_list.push_back(AdditionExpression(expression_left_list[expression_left_list.size()-1], expression_right_list[expression_right_list.size()-1]));
+                                add_expression_list.emplace_back(expression_left_list[expression_left_list.size()-1], expression_right_list[expression_right_list.size()-1]);
                                 expression_total_list.push_back(&add_expression_list[add_expression_list.size()-1]);
-                                std::cout << "add eval" << add_expression_list[0].evaluate(10) <<"\n";
+//                                std::cout << "add eval" << add_expression_list[0].evaluate(10) <<"\n";
 
                             }
                             else if (operator_ == "*") {
-                                multiply_expression_list.push_back(MultiplyExpression(expression_left_list[expression_left_list.size()-1], expression_right_list[expression_right_list.size()-1]));
+                                multiply_expression_list.emplace_back(expression_left_list[expression_left_list.size()-1], expression_right_list[expression_right_list.size()-1]);
                                 expression_total_list.push_back(&multiply_expression_list[multiply_expression_list.size()-1]);
-                                std::cout << "mult eval" << multiply_expression_list[0].evaluate(10) <<"\n";
+//                                std::cout << "mult eval" << multiply_expression_list[0].evaluate(10) <<"\n";
                             }
-                            std::cout << "pnt eval " << expression_total_list[0]->evaluate(10) <<"\n";
+//                            std::cout << "pnt eval " << expression_total_list[0]->evaluate(10) <<"\n";
                             break;
                         }
                     }
@@ -223,6 +273,10 @@ namespace day202211 {
                     std::cout << "still there? 1 " << monkeys[1].expression_ << "or " << expression_total_list[1] << "\n";
                     std::cout << "still there? 2 " << monkeys[2].expression_ << "or " << expression_total_list[2] << "\n";
                     std::cout << "still there? 3 " << monkeys[3].expression_ << "or " << expression_total_list[3] << "\n";
+                    std::cout << "each one " << multiply_expression_list[0].evaluate(10) << " end" << "\n";
+//                    std::cout << "each one " << add_expression_list[0].evaluate(10) << " end" << "\n";
+//                    std::cout << "each one " << multiply_expression_list[1].evaluate(10) << " end" << "\n";
+//                    std::cout << "each one " << add_expression_list[1].evaluate(10) << " end" << "\n";
 
                 }
                 else {

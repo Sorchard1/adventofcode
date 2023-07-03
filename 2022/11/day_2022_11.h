@@ -12,41 +12,51 @@ namespace day202211 {
     class Expression {
     public:
         // Destructor guaranteed to be called when out of scope
-        Expression() {};
+        virtual ~Expression(){};
         virtual int evaluate(int old) = 0;
     };
     class CombinedExpression : public Expression {
     public:
         // Destructor guaranteed to be called when out of scope
+        ~CombinedExpression();
         CombinedExpression(Expression *left, Expression *right);
         virtual int evaluate(int old) = 0;
         Expression* left_;
         Expression* right_;
+//        CombinedExpression(const CombinedExpression &t);
+
     };
 
     class NumericalExpression : public Expression {
         public:
+            ~NumericalExpression();
             NumericalExpression(int value);
             int evaluate(int old) override;
             int value_;
+//            NumericalExpression(const NumericalExpression &t);
 
     };
 
     class NullExpression : public Expression {
         public:
+            ~NullExpression();
             NullExpression();
             int evaluate(int old) override;
-    };
+//            NullExpression(const NullExpression &t){};
+        };
 
     class OldExpression : public Expression {
         public:
+            ~OldExpression();
             OldExpression();
             int evaluate(int old) override;
+//            OldExpression(const OldExpression &t){};
 
     };
 
     class AdditionExpression : public CombinedExpression {
         public:
+            ~AdditionExpression();
             AdditionExpression(Expression *left, Expression *right);
             int evaluate(int old) override;
     };
@@ -54,6 +64,7 @@ namespace day202211 {
     class MultiplyExpression : public CombinedExpression {
 
         public:
+            ~MultiplyExpression();
             MultiplyExpression(Expression *left, Expression *right);
             int evaluate(int old) override;
     };
@@ -68,6 +79,7 @@ namespace day202211 {
         int value_;
 
     public:
+        virtual ~Monkey();
         int index;
         Expression* expression_;
 
@@ -75,6 +87,8 @@ namespace day202211 {
                int monkey_index_false, Expression* expression);
         void inspect_items();
         void set_expression(Expression* expression);
+//        Monkey(Monkey &t);
+
     };
     int run(std::filesystem::path data_path);
 }
