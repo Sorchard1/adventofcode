@@ -23,8 +23,8 @@ namespace day202211 {
         virtual int evaluate(int old) = 0;
         Expression* left_;
         Expression* right_;
-//        CombinedExpression(const CombinedExpression &t);
-
+        CombinedExpression(const CombinedExpression &t);  // Copy constuctor
+        CombinedExpression& operator=(const CombinedExpression& other);
     };
 
     class NumericalExpression : public Expression {
@@ -33,7 +33,7 @@ namespace day202211 {
             NumericalExpression(int value);
             int evaluate(int old) override;
             int value_;
-//            NumericalExpression(const NumericalExpression &t);
+            NumericalExpression(const NumericalExpression &t);  // Copy constuctor
 
     };
 
@@ -50,7 +50,7 @@ namespace day202211 {
             ~OldExpression();
             OldExpression();
             int evaluate(int old) override;
-//            OldExpression(const OldExpression &t){};
+            OldExpression(const OldExpression &t){};  // Copy constuctor
 
     };
 
@@ -59,6 +59,8 @@ namespace day202211 {
             ~AdditionExpression();
             AdditionExpression(Expression *left, Expression *right);
             int evaluate(int old) override;
+            AdditionExpression(const AdditionExpression &t);  // Copy constuctor
+
     };
 
     class MultiplyExpression : public CombinedExpression {
@@ -79,7 +81,7 @@ namespace day202211 {
         int value_;
 
     public:
-        virtual ~Monkey();
+        ~Monkey();
         int index;
         Expression* expression_;
 
@@ -87,7 +89,7 @@ namespace day202211 {
                int monkey_index_false, Expression* expression);
         void inspect_items();
         void set_expression(Expression* expression);
-//        Monkey(Monkey &t);
+        Monkey(const Monkey &t);  // Copy constuctor
 
     };
     int run(std::filesystem::path data_path);

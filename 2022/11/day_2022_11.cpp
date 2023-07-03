@@ -13,6 +13,7 @@
 namespace day202211 {
     Monkey::~Monkey() {
         std::cout << "delete monkey \n";
+        delete expression_;
     };
     CombinedExpression::~CombinedExpression() {
         std::cout << "delete combined expression input \n";
@@ -42,13 +43,26 @@ namespace day202211 {
     NumericalExpression::NumericalExpression(int value) : Expression() {
         value_ = value;
     }
-//    NumericalExpression::NumericalExpression(const NumericalExpression &t) {
-//        std::cout << "copy numerical exp \n";
-//        value_ = t.value_;
-//    };
+    NumericalExpression::NumericalExpression(const NumericalExpression &t) {
+        std::cout << "copy numerical exp \n";
+        value_ = t.value_;
+    }
+
+    CombinedExpression::CombinedExpression(const CombinedExpression &t) {
+        std::cout << "copy Combined exp \n";
+        left_ = t.left_;
+        right_ = t.right_;
+    }
+    CombinedExpression& CombinedExpression::operator=(const CombinedExpression& other){
+        std::cout << "copy assign combined \n";
+
+        left_ = other.left_;
+        right_ = other.right_;
+        return *this;
+    }
 
     int NumericalExpression::evaluate(int old) {
-        std::cout <<"get value " << value_ << "\n";
+//        std::cout <<"get value " << value_ << "\n";
 
         return value_;
     }
@@ -60,23 +74,17 @@ namespace day202211 {
     }
 
     OldExpression::OldExpression() : Expression() {
+        std::cout << "make old exp \n";
+
     }
 
     int OldExpression::evaluate(int old) {
-        std::cout <<"get old "<<old<<"\n";
+//        std::cout <<"get old "<<old<<"\n";
 
         return old;
     }
 
-    AdditionExpression::AdditionExpression(Expression *left, Expression *right) : CombinedExpression(left, right) {
-        // TODO want to call these in subclass
-//        left_ = left;
-//        right_ = right;
-    }
-//    CombinedExpression::CombinedExpression(const CombinedExpression &t){
-//        left_=t.left_;
-//        right_=t.right_;
-//    }
+    AdditionExpression::AdditionExpression(Expression *left, Expression *right) : CombinedExpression(left, right) {}
 
     int AdditionExpression::evaluate(int old) {
         std::cout <<"adding "<<old<<"\n";
@@ -84,22 +92,29 @@ namespace day202211 {
         return left_->evaluate(old) + right_->evaluate(old);
     }
 
-    MultiplyExpression::MultiplyExpression(Expression *left, Expression *right) : CombinedExpression(left, right) {
-        // TODO want to call these in subclass
-//        left_ = left;
-//        right_ = right;
-//        std::cout << "Multiply left" << left_->evaluate(10) << "\n";
-//        std::cout << "Multiply right" << right->evaluate(10) << "\n";
+    AdditionExpression::AdditionExpression(const AdditionExpression &t) : CombinedExpression(t) {
+        std::cout << "copy addition exp \n";
     }
+    MultiplyExpression::MultiplyExpression(Expression *left, Expression *right) : CombinedExpression(left, right) {}
 
     int MultiplyExpression::evaluate(int old) {
-        std::cout <<"multiplying "<<old<<"\n";
-        std::cout << "f("<<left_<<"):" << typeid(*left_).name() << "\n";
-        std::cout << "f("<<right_<<"):" << typeid(*right_).name() << "\n";
+//        std::cout <<"multiplying "<<old<<"\n";
+//        std::cout << "f("<<left_<<"):" << typeid(*left_).name() << "\n";
+//        std::cout << "f("<<right_<<"):" << typeid(*right_).name() << "\n";
 
         return left_->evaluate(old) * right_->evaluate(old);
     }
+    Monkey::Monkey(const Monkey &t){
+        std::cout <<"copy monkey \n";
+        index = t.index;
+        items = t.items;
+        test_divisor = t.test_divisor;
+        index_true = t.index_true;
+        index_false = t.index_false;
+        expression_ = t.expression_;
+        std::cout <<"copy monkey exp "<< expression_ << "\n";
 
+    }
     Monkey::Monkey(int monkey_index, std::vector<int> monkey_items, int monkey_test_divisor, int monkey_index_true,
                    int monkey_index_false, Expression* expression) {
         index = monkey_index;
@@ -112,7 +127,7 @@ namespace day202211 {
 
         std::cout << expression_->evaluate(10) << " checked" << "\n" ;
 
-        value_ = 0;
+//        value_ = 0;
     }
 
     void Monkey::inspect_items() {
@@ -270,11 +285,13 @@ namespace day202211 {
                     std::cout << "sizes " << monkeys.size()-1 <<", " << monkeys.size()-1 << expression_total_list[monkeys.size()-1]<< "\n";
 //                    monkeys[monkeys.size()-1].set_expression(expression_total_list[monkeys.size()-1]);
                     std::cout << "still there? 0 " << monkeys[0].expression_ << "or " << expression_total_list[0] << "\n";
-                    std::cout << "still there? 1 " << monkeys[1].expression_ << "or " << expression_total_list[1] << "\n";
-                    std::cout << "still there? 2 " << monkeys[2].expression_ << "or " << expression_total_list[2] << "\n";
-                    std::cout << "still there? 3 " << monkeys[3].expression_ << "or " << expression_total_list[3] << "\n";
+//                    std::cout << "still there? 1 " << monkeys[1].expression_ << "or " << expression_total_list[1] << "\n";
+//                    std::cout << "still there? 2 " << monkeys[2].expression_ << "or " << expression_total_list[2] << "\n";
+//                    std::cout << "still there? 3 " << monkeys[3].expression_ << "or " << expression_total_list[3] << "\n";
                     std::cout << "each one " << multiply_expression_list[0].evaluate(10) << " end" << "\n";
+                    std::cout << "each one " << monkeys[0].expression_->evaluate(10) << " end" << "\n";
 //                    std::cout << "each one " << add_expression_list[0].evaluate(10) << " end" << "\n";
+                    std::cout << "End "<< multiply_expression_list.size() << "\n";
 //                    std::cout << "each one " << multiply_expression_list[1].evaluate(10) << " end" << "\n";
 //                    std::cout << "each one " << add_expression_list[1].evaluate(10) << " end" << "\n";
 
