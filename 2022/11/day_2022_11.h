@@ -163,27 +163,23 @@ namespace day202211 {
     class Monkey
     {
         private:
-            std::vector<int> items;
             int test_divisor;
             int index_true;
             int index_false;
-            int value_;
             std::unique_ptr<Expression> expression;
     public:
         ~Monkey() = default;
-//        int index;
-//        Expression* expression_;
-//
         Monkey(int monkey_index, std::vector<int> monkey_items, int monkey_test_divisor, int monkey_index_true,
-               int monkey_index_false, std::unique_ptr<Expression> expression);
-//        Monkey(const Monkey &t);  // Copy constructor
-//        Monkey& operator=(const Monkey &t) ;  // Copy assignment
-//
-//        ~Monkey() = default;
+               int monkey_index_false, std::unique_ptr<Expression> monkey_expression);
         Monkey(Monkey const& t) : expression(t.expression->clone()) {}
         Monkey(Monkey && t) = default;
         Monkey& operator=(Monkey const& t) { expression = t.expression->clone(); return *this; }
         Monkey& operator=(Monkey && t) = default;
+        void inspect_items(std::vector<Monkey> &monkeys);
+        int n_inspections;
+        int index;
+        std::vector<int> items;
+
     };
 
     int run(std::filesystem::path data_path);
