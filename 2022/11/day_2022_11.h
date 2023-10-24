@@ -99,6 +99,7 @@ namespace day202211 {
         // Destructor guaranteed to be called when out of scope
         virtual ~Expression()= default;
         virtual int evaluate(int old) = 0;
+        virtual int evaluate_modulo(int old_modulo, int divisor) = 0;
         auto clone() const { return std::unique_ptr<Expression>(clone_impl()); }
     protected:
         virtual Expression* clone_impl() const = 0;
@@ -109,6 +110,7 @@ namespace day202211 {
             ~OldExpression() override= default;
             OldExpression()= default;
             int evaluate(int old) override;
+            int evaluate_modulo(int old_modulo, int divisor) override;
             OldExpression(const OldExpression &t){};  // Copy constuctor
 
         protected:
@@ -120,6 +122,7 @@ namespace day202211 {
             ~ValueExpression() override= default;
             explicit ValueExpression(int value);
             int evaluate(int old) override;
+            int evaluate_modulo(int old_modulo, int divisor) override;
             ValueExpression(const ValueExpression &t);  // Copy constuctor
 
         protected:
@@ -146,6 +149,7 @@ namespace day202211 {
             ~AdditionExpression() override= default;
             AdditionExpression(std::unique_ptr<Expression> left, std::unique_ptr<Expression> right);
             int evaluate(int old) override;
+            int evaluate_modulo(int old_modulo, int divisor) override;
 
         protected:
             virtual AdditionExpression* clone_impl() const override { return new AdditionExpression(*this); };
@@ -156,6 +160,7 @@ namespace day202211 {
             ~MultiplyExpression() override= default;
             MultiplyExpression(std::unique_ptr<Expression> left, std::unique_ptr<Expression> right);
             int evaluate(int old) override;
+            int evaluate_modulo(int old_modulo, int divisor) override;
 
         protected:
             virtual MultiplyExpression* clone_impl() const override { return new MultiplyExpression(*this); };
@@ -163,11 +168,12 @@ namespace day202211 {
     class Monkey
     {
         private:
-            int test_divisor;
-            int index_true;
-            int index_false;
+
             std::unique_ptr<Expression> expression;
     public:
+        int index_true;
+        int index_false;
+        int test_divisor;
         ~Monkey() = default;
         Monkey(int monkey_index, std::vector<int> monkey_items, int monkey_test_divisor, int monkey_index_true,
                int monkey_index_false, std::unique_ptr<Expression> monkey_expression);
@@ -175,13 +181,39 @@ namespace day202211 {
         Monkey(Monkey && t) = default;
         Monkey& operator=(Monkey const& t) { expression = t.expression->clone(); return *this; }
         Monkey& operator=(Monkey && t) = default;
-        void inspect_items(std::vector<Monkey> &monkeys);
+        void inspect_items(std::vector<Monkey> &monkeys, int divisor);
+        int inspect_items_modulo(bool pass_true, std::vector<int> &modulos, std::vector<Monkey> &monkeys);
         int n_inspections;
         int index;
         std::vector<int> items;
 
     };
+    class Item
+    {
+        public:
+            Item(int value, int index);
+            void initialise(int monkey_divisors);
+            int monkey_index;
+            std::vector<int> modulos;
+            std::vector<int> initial_items;
+    };
+    class ItemTracker
+    {
+    public:
+            ItemTracker();
+            void load_divisor(int divisor);
+            void load_move_true(int move_true);
+            void load_move_false(int move_false);
+            void setup();
+            std::vector<Item> monkey_items;
+            std::vector<int> monkey_divisors;
+            std::vector<int> monkey_move_true;
+            std::vector<int> monkey_move_false;
+            std::vector<int> n_inspections;
+        ;
 
+        void update_all();
+    };
     int run(std::filesystem::path data_path);
 }
 
