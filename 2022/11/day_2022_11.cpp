@@ -212,7 +212,7 @@ namespace day202211 {
                             // The correct monkey, item pair found, now inspect for all
                             // 1.) Apply the operation to the modulo (and all other modulos) to work out new modulo
                             // 2.) Test which operation will be done (if modulo = 0)
-                            index_throw = monkeys[j].inspect_items_modulo(item_modulo[k][j]==0, item_modulo[k], monkeys);
+                            index_throw = monkeys[j].inspect_items_modulo(item_modulo[k], monkeys);
 
                             // 3.) Throw items to other monkeys
                             std:: cout << "\n Round "<< i << " Throw from " << monkey_indices[k] << " to " << index_throw << "\n";
@@ -237,47 +237,7 @@ namespace day202211 {
                     top_two[1] = monkeys[j].n_inspections;
                 }
             }
-            std::cout << "Part 1 " << top_two[0]*top_two[1] << "\n";
-//            ItemTracker item_tracker = ItemTracker();
-//            for (auto &monkey: monkeys) {
-//                item_tracker.load_divisor(monkey.test_divisor);
-//                item_tracker.load_move_true(monkey.index_true);
-//                item_tracker.load_move_false(monkey.index_false);
-//            }
-//            for (int i = 0; i < monkeys.size(); i++) {
-//                for (int j = 0; j < monkeys[i].items.size(); j++) {
-//                    item_tracker.monkey_items.emplace_back(monkeys[i].items[j], i);
-//                }
-//            }
-//            item_tracker.setup();
-//            std::cout << "Done \n";
-//            // Add the pieces of the monkeys to the item tracker
-//            for  (const auto & monkey : monkeys) {
-//                item_tracker.add_items(monkey);
-//            }
-
-//
-//            for (int i = 0; i < 10000; i++) {
-//                std::cout << "Iteration " << i << "\n";
-//
-//                for (int j = 0; j<monkeys.size(); j++) {
-//                    monkeys[j].inspect_items(monkeys, 1);
-//
-//                }
-//
-//                if (i == 1-1){
-//                    std::cout << i << "has :\n";
-//                }
-//                if (i == 20-1){
-//                    std::cout << i << "has :\n";
-//                }
-//                if (i == 1000-1){
-//                    std::cout << i << "has :\n";
-//                }
-//                if (i == 2000-1){
-//                    std::cout << i << "has :\n";
-//                }
-//            }
+            std::cout << "Part 2 " << top_two[0]*top_two[1] << "\n";
         }
         return 0;
     }
@@ -397,7 +357,7 @@ namespace day202211 {
 
     }
 
-    int Monkey::inspect_items_modulo(bool pass_true, std::vector<int> &modulos, std::vector<Monkey> &monkeys) {
+    int Monkey::inspect_items_modulo(std::vector<int> &modulos, std::vector<Monkey> &monkeys) {
         int index_return;
 
         // 1.) Apply the operation to the modulo (and all other modulos) to work out new modulo
@@ -416,65 +376,4 @@ namespace day202211 {
         return index_return;
     }
 
-    void ItemTracker::update_all() {
-        //loop through each monkey.
-        for (int i = 0; i < monkey_divisors.size(); i++) {
-            // find all items with that monkey
-            for (int j = 0; j < monkey_items.size(); j++) {
-                // Check the modulo of the current monkey
-                if (monkey_items[j].modulos[j] == 0){
-                    // Move the item to a different monkey
-                    monkey_items[j].monkey_index = monkey_move_true[i];
-
-                    //update the modulo
-
-                    // change the monkey count
-
-                } else {
-                    // Move the item to a different monkey
-                    monkey_items[j].monkey_index = monkey_move_false[i];
-                    //update the modulo
-
-                    // change the monkey count
-                }
-
-            }
-        }
-    }
-
-    ItemTracker::ItemTracker() {}
-
-    void ItemTracker::load_divisor(int divisor) {
-        monkey_divisors.push_back(divisor);
-    }
-
-    void ItemTracker::setup()
-    {
-        // Call after running load divisor.
-        for (int i = 0; i < monkey_divisors.size(); i++) {
-            monkey_items[i].initialise(monkey_divisors[i]);
-        }
-
-    }
-
-    void ItemTracker::load_move_true(int move_true) {
-        monkey_move_true.push_back(move_true);
-    }
-
-    void ItemTracker::load_move_false(int move_false) {
-        monkey_move_false.push_back(move_false);
-    }
-
-    Item::Item(int value, int index) {
-        initial_items.push_back(value);
-        monkey_index = index;
-
-    }
-
-    void Item::initialise(int monkey_divisor) {
-        // Make modulo for each divisor, so that it can get tracked later
-        for (int j = 0; j < initial_items.size(); j++) {
-            modulos.push_back(initial_items[j] % monkey_divisor);
-        }
-    }
 }

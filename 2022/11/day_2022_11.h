@@ -182,38 +182,13 @@ namespace day202211 {
         Monkey& operator=(Monkey const& t) { expression = t.expression->clone(); return *this; }
         Monkey& operator=(Monkey && t) = default;
         void inspect_items(std::vector<Monkey> &monkeys, int divisor);
-        int inspect_items_modulo(bool pass_true, std::vector<int> &modulos, std::vector<Monkey> &monkeys);
+        int inspect_items_modulo(std::vector<int> &modulos, std::vector<Monkey> &monkeys);
         int n_inspections;
         int index;
         std::vector<int> items;
 
     };
-    class Item
-    {
-        public:
-            Item(int value, int index);
-            void initialise(int monkey_divisors);
-            int monkey_index;
-            std::vector<int> modulos;
-            std::vector<int> initial_items;
-    };
-    class ItemTracker
-    {
-    public:
-            ItemTracker();
-            void load_divisor(int divisor);
-            void load_move_true(int move_true);
-            void load_move_false(int move_false);
-            void setup();
-            std::vector<Item> monkey_items;
-            std::vector<int> monkey_divisors;
-            std::vector<int> monkey_move_true;
-            std::vector<int> monkey_move_false;
-            std::vector<int> n_inspections;
-        ;
 
-        void update_all();
-    };
     int run(std::filesystem::path data_path);
 }
 
