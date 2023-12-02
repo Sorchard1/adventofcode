@@ -1,0 +1,12 @@
+//
+// Created by simon on 02/11/23.
+//
+
+#ifndef ADVENTOFCODE_DAY_2023_12_H
+#define ADVENTOFCODE_DAY_2023_12_H
+
+namespace day202312 {
+    int run(std::filesystem::path data_path);
+}
+
+#endif //ADVENTOFCODE_DAY_2023_12_H

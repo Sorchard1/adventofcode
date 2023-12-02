@@ -1,3 +1,4 @@
 add_executable(adventofcode_main main.cpp)
 
 target_link_libraries(adventofcode_main PUBLIC adventofcode_2022_lib)
+target_link_libraries(adventofcode_main PUBLIC adventofcode_2023_lib)
