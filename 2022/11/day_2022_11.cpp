@@ -150,10 +150,19 @@ namespace day202211 {
         else {
             std::cout << "\n File not open!";
         }
+
+        std::vector<int> monkey_divisors;
+        for (int i = 0; i < monkeys.size(); i++) {
+            monkey_divisors.push_back(monkeys[i].test_divisor);
+        }
+        for (int i = 0; i < monkeys.size(); i++) {
+            monkeys[i].init_modulos(monkey_divisors);
+        }
+
         for (int i = 0; i < 20; i++) {
             std::cout << "Iteration " << i << "\n";
             for (int j = 0; j<monkeys.size(); j++) {
-                monkeys[j].inspect_items(monkeys);
+                monkeys[j].inspect_items(monkeys, monkey_divisors);
 
             }
         }
@@ -185,11 +194,21 @@ namespace day202211 {
         std::cout << _value << " ";
         return _value;
     }
+    int ValueExpression::update_modulo(int old, int divisor)
+    {
+        std::cout << _value << " ";
+        return _value;
+    }
     ValueExpression::ValueExpression(const ValueExpression &t) {
         _value = t._value;
     }
 
     int OldExpression::evaluate(int old)
+    {
+        std::cout << old << " ";
+        return old;
+    }
+    int OldExpression::update_modulo(int old, int divisor)
     {
         std::cout << old << " ";
         return old;
@@ -212,6 +231,11 @@ namespace day202211 {
         std::cout << "Add ";
         return _left->evaluate(old) + _right->evaluate(old);
     }
+    int AdditionExpression::update_modulo(int old, int divisor)
+    {
+        std::cout << "Add ";
+        return _left->evaluate(old) + _right->evaluate(old);
+    }
     MultiplyExpression::MultiplyExpression(std::unique_ptr<Expression> left, std::unique_ptr<Expression> right)
             :CombinedExpression(std::move(left), std::move(right))
     {
@@ -219,6 +243,11 @@ namespace day202211 {
     }
 
     int MultiplyExpression::evaluate(int old)
+    {
+        std::cout << "Multiply ";
+        return _left->evaluate(old) * _right->evaluate(old);
+    }
+    int MultiplyExpression::update_modulo(int old, int divisor)
     {
         std::cout << "Multiply ";
         return _left->evaluate(old) * _right->evaluate(old);
@@ -242,14 +271,32 @@ namespace day202211 {
         expression = std::move(monkey_expression);
         n_inspections = 0;
     }
-
-    void Monkey::inspect_items(std::vector<Monkey> &monkeys)
+    void Monkey::init_modulos(std::vector<int> &monkey_divisors){
+        std::vector<int> item_modulos;
+        for (int i = 0; i < items.size(); i++) {
+            for (int j = 0; j<monkey_divisors.size(); j++) {
+                item_modulos.push_back(expression->update_modulo(items[i], monkey_divisors[j]));
+            }
+            modulos.push_back(item_modulos);
+            item_modulos.clear();
+        }
+    }
+    void Monkey::inspect_items(std::vector<Monkey> &monkeys, std::vector<int> &monkey_divisors)
     {
         int worry_level;
+        int modulo;
+        std::vector<int> item_modulos;
         for (int i = 0; i < items.size(); i++){
             std::cout << "Monk " << index << " " << items[i] << " " << i << " "  << items.size() << " \n";
             // Find the new worry level of the items.
-            worry_level = expression->evaluate(items[i]) / 3;
+            worry_level = expression->evaluate(items[i]);
+            for (int j = 0; j < monkey_divisors.size(); j++){
+                modulos[i][j] = expression->update_modulo(items[i], monkey_divisors[j]));
+            }
+
+            // store the modulo for each monkey divisor for each item
+            modulos.push_back(item_modulos);
+
             std::cout << "\n";
             if (worry_level % test_divisor==0){
                 monkeys[index_true].items.push_back(worry_level);
