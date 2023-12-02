@@ -55,11 +55,8 @@ namespace day202301 {
         std::string new_string;
         std::vector<int> first_integer;
         std::vector<int> last_integer;
-        unsigned int line_length;
         std::string sanitised_line;
-        int found_substring_index;
-        std::vector<std::string> number_strings = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
-        std::vector<std::string> number_values = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
+
         std::unordered_map<int, std::string> single_number_map = {
                 {0, "zero"}, {1, "one"}, {2, "two"}, {3, "three"}, {4, "four"},
                 {5, "five"}, {6, "six"}, {7, "seven"}, {8, "eight"}, {9, "nine"}
@@ -71,12 +68,9 @@ namespace day202301 {
             while (datafile) {
                 std::getline(datafile, myline);
                 sanitised_line = myline;
-                // santitise the first found number from the left then stop
-                std::cout << "line at:" << myline << "\n";
                 for (int i = 0; i<myline.length(); i++) {
                     value = find_substring(i, myline, single_number_map, false, is_part_1);
                     if (value != -1){
-                        std::cout << "substrval at:" << value << " For the line " << myline << "\n";
                         first_integer.push_back(value);
                         break;
                     }
@@ -86,7 +80,6 @@ namespace day202301 {
                 for (int i = 0; i<myline.length(); i++) {
                     value = find_substring(myline.length()-i-1, myline, single_number_map, true, is_part_1);
                     if (value != -1){
-                        std::cout << "substrval at:" << value << " For the line " << myline << "\n";
                         last_integer.push_back(value);
                         break;
                     }
