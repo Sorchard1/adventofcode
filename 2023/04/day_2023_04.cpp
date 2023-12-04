@@ -99,6 +99,9 @@ namespace day202304 {
         }
 
         points = 0;
+        std::vector<int> n_winners_line;
+        std::vector<int> n_instances;
+
         for (int i = 0; i<card_nums.size(); i++) {
             n_winners = 0;
             for (int j = 0; j<card_nums[i].size(); j++) {
@@ -111,10 +114,27 @@ namespace day202304 {
                 // Raise to 2 to the power of winners - 1. Could be done without moving from int and back
                 points += std::pow(2, n_winners - 1);
             }
+            n_winners_line.push_back(n_winners);
+            // Store the original cards
+            n_instances.push_back(1);
         }
 
         std::cout << "Part 1:" << points << "\n";
+        // For every line
+        for (int i = 0; i<n_winners_line.size() - 1; i++) {
+            // For every winner on the line, increase the number of instances on the next lines by 1
+            for (int j = i; j < i + n_winners_line[i]; j++) {
+                // repeat for every instance of the current card (n_instances[i])
+                n_instances[j + 1] += n_instances[i];
+            }
+        }
 
+        // Tally total instances
+        int total_wins = 0;
+        for (int i = 0; i<n_winners_line.size(); i++) {
+            total_wins += n_instances[i];
+        }
+        std::cout << "Part 2:" << total_wins << "\n";
         return 0;
     }
 }
